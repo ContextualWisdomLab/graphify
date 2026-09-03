@@ -3,13 +3,40 @@ name: CI
 on:
   push:
     branches: ["v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "main"]
+    # NOT a blanket "docs/**": tests/test_install_strings.py reads
+    # docs/how-it-works.md's actual content and asserts specific strings in it
+    # (the code-only-semantic-extraction regression guard, issue #580). A
+    # blanket docs/** ignore would let a docs-only PR that breaks that
+    # contract skip CI silently. List only the docs/ paths pytest never reads
+    # the content of — GitHub's own path-filter docs document `!negation`
+    # only for the `paths` (allow-list) keyword, not for `paths-ignore`, so an
+    # explicit enumeration here (rather than a `!docs/how-it-works.md`
+    # exception) is the documented-safe way to carve it out. Root `*.md`
+    # files (README/AGENTS/CHANGELOG/SECURITY/ARCHITECTURE/BENCHMARKS) are
+    # not read by any test, so that pattern is unchanged.
     paths-ignore:
-      - "docs/**"
+      - "docs/logo-icon.svg"
+      - "docs/docker-mcp-sqlite.md"
+      - "docs/graph-hero.png"
+      - "docs/demo-path.svg"
+      - "docs/logo.png"
+      - "docs/logo-text.svg"
+      - "docs/node-summaries-rfc.md"
+      - "docs/superpowers/**"
+      - "docs/translations/**"
       - "*.md"
   pull_request:
     branches: ["v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "main"]
     paths-ignore:
-      - "docs/**"
+      - "docs/logo-icon.svg"
+      - "docs/docker-mcp-sqlite.md"
+      - "docs/graph-hero.png"
+      - "docs/demo-path.svg"
+      - "docs/logo.png"
+      - "docs/logo-text.svg"
+      - "docs/node-summaries-rfc.md"
+      - "docs/superpowers/**"
+      - "docs/translations/**"
       - "*.md"
   workflow_dispatch:
 
